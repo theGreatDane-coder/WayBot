@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import datetime
 import csv
 from typing import Dict
+import random
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CSV_FILE = BASE_DIR / "db" / "messages.csv"
@@ -14,7 +15,7 @@ CSV_HEADERS = [
     "text"
 ]
 
-def init_csv_file():
+def init_csv_file() -> None:
     """
     Ensures the 'db/messages.csv' file is ready to use.
     - Creates the parent folder if it doesn't exist
@@ -25,16 +26,16 @@ def init_csv_file():
     if not CSV_FILE.exists():
         with open(CSV_FILE, mode='w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(CSV_HEADERS)
+            writer.writerow(CSV_HEADERS + ["lat", "lon"])
         print("CSV file initialized.")
 
 
-def save_message_to_csv(message: Dict):
+def save_message_to_csv(message: Dict, lat: float, lon: float) -> None:
     """
     Appends the extracted message data to the CSV log.
     """
     row = extract_message_data(message)
-
+    row = row + [lat, lon]
     with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(row)
@@ -67,3 +68,27 @@ def extract_message_data(message: Dict) -> list[str]:
         datetime.utcnow().isoformat() if header == "timestamp" else deep_get(message, header)
         for header in CSV_HEADERS
     ]
+
+def extract_coordinates(message: Dict) -> tuple[float, float]:
+    """
+    TODO: find way to extract coordinates
+    """
+
+    if message:
+
+        # List of coordinates (lat, lon) from central Athens
+        athens_coords = [
+            (37.9755, 23.7348),  # Syntagma Square
+            (37.9715, 23.7267),  # Acropolis
+            (37.9762, 23.7331),  # Ermou Street
+            (37.9780, 23.7323),  # National Garden entrance
+            (37.9721, 23.7275),  # Dionysiou Areopagitou
+            (37.9738, 23.7354),  # Hellenic Parliament
+            (37.9689, 23.7292),  # Koukaki
+            (37.9771, 23.7236),  # Monastiraki Square
+            (37.9708, 23.7314),  # Acropolis Museum
+        ]
+
+        # Pick one at random
+        random_coord = random.choice(athens_coords)
+        return random_coord

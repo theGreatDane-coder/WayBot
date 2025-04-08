@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from _utils import init_csv_file, save_message_to_csv
+from _utils import init_csv_file, save_message_to_csv, extract_coordinates
 import uvicorn
 
 app = FastAPI()
@@ -12,8 +12,8 @@ async def telegram_webhook(request: Request):
     message = payload.get("message")
 
     if message:
-        print("📥 RAW MESSAGE:", message)
-        save_message_to_csv(message)
+        lat,lon = extract_coordinates(message)
+        save_message_to_csv(message, lat, lon)
 
     return {"ok": True}
 
@@ -21,6 +21,5 @@ async def telegram_webhook(request: Request):
 # === Run server directly ===
 if __name__ == "__main__":
     
-    print("⚡ Running with python server.py")  # Add this
     init_csv_file()  # Set up CSV before starting the server
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
