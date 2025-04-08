@@ -65,7 +65,7 @@ def extract_message_data(message: Dict) -> list[str]:
         return str(data)  # Always return a string (safe for CSV)
 
     return [
-        datetime.utcnow().isoformat() if header == "timestamp" else deep_get(message, header)
+        datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") if header == "timestamp" else deep_get(message, header)
         for header in CSV_HEADERS
     ]
 
@@ -76,17 +76,78 @@ def extract_coordinates(message: Dict) -> tuple[float, float]:
 
     if message:
 
-        # List of coordinates (lat, lon) from central Athens
-        athens_coords = [
-            (37.9755, 23.7348),  # Syntagma Square
-            (37.9715, 23.7267),  # Acropolis
-            (37.9762, 23.7331),  # Ermou Street
-            (37.9780, 23.7323),  # National Garden entrance
-            (37.9721, 23.7275),  # Dionysiou Areopagitou
-            (37.9738, 23.7354),  # Hellenic Parliament
-            (37.9689, 23.7292),  # Koukaki
-            (37.9771, 23.7236),  # Monastiraki Square
-            (37.9708, 23.7314),  # Acropolis Museum
+        athens_coords: list[tuple[float, float]] = [
+            # 🏛️ Central Athens
+            (37.9751, 23.7350),  # Panepistimiou St
+            (37.9765, 23.7376),  # Mitropoleos St
+            (37.9743, 23.7309),  # Stadiou St
+
+            # 🌳 Kifisia (North)
+            (38.0724, 23.8113),  # Kifisias Ave
+            (38.0792, 23.8117),  # Charilaou Trikoupi St
+
+            # 🛍️ Marousi
+            (38.0503, 23.8044),  # Agiou Konstantinou St
+
+            # 🧊 Chalandri
+            (38.0166, 23.8006),  # Andrea Papandreou St
+            (38.0193, 23.7917),  # Kifisias Ave
+
+            # 🌲 Melissia
+            (38.0571, 23.8336),  # Dimokratias Ave
+
+            # 🛳️ Piraeus
+            (37.9436, 23.6469),  # Akti Miaouli
+            (37.9412, 23.6537),  # Grigoriou Labraki
+
+            # 🚛 Keratsini
+            (37.9611, 23.6197),  # Pavlou Mela St
+
+            # 🏖️ Glyfada
+            (37.8781, 23.7552),  # Grigoriou Lampraki St
+            (37.8742, 23.7544),  # Lazaraki St
+
+            # 🌊 Voula
+            (37.8431, 23.7741),  # Vasileos Pavlou St
+
+            # 🏄 Alimos
+            (37.9102, 23.7153),  # Kalamakiou Ave
+
+            # 🏠 Nea Smyrni
+            (37.9458, 23.7126),  # Eleftheriou Venizelou Ave
+
+            # 🧱 Nea Ionia
+            (38.0353, 23.7601),  # Heraklion Ave
+
+            # 🌇 Galatsi
+            (38.0135, 23.7550),  # Veikou Ave
+
+            # 🏭 Menidi (Acharnes)
+            (38.0810, 23.7382),  # Karamanli Ave
+
+            # 🧿 Agia Paraskevi
+            (38.0165, 23.8277),  # Mesogeion Ave
+
+            # 🏔️ Ilioupoli
+            (37.9277, 23.7523),  # Eleftheriou Venizelou Ave
+
+            # 🛣️ Argiroupoli
+            (37.9052, 23.7286),  # Vouliagmenis Ave
+
+            # 🌆 Nea Filadelfeia
+            (38.0307, 23.7336),  # Dekeleias Ave
+
+            # 🛒 Peristeri
+            (38.0147, 23.6885),  # Thivon Ave
+
+            # 🔧 Petroupoli
+            (38.0372, 23.6845),  # 25 Martiou St
+
+            # 🚦 Egaleo
+            (37.9926, 23.6793),  # Iera Odos
+
+            # 🎯 Zografou
+            (37.9753, 23.7656),  # Olof Palme St
         ]
 
         # Pick one at random
